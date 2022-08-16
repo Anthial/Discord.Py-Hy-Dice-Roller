@@ -43,8 +43,9 @@
                     (if (in "d" x)
                         (self.dice-roll x)
                         (int x))))
-                n)
-                (await (ctx.send (+ "You rolled: " (str n)))))))
+                [$ n])
+                (await (ctx.send (+ "Rolling: " (str (.join " + " (get $ 0)))
+                "\nYou rolled: " (str (get $ 1))))))))
 
             
 (defn setup [bot]
