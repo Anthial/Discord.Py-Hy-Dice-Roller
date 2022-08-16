@@ -9,7 +9,7 @@
     (defn __init__ [self bot]
         (setv self.bot bot))
 
-    (defn/a dice-roll [self dice]
+    (defn dice-roll [self dice]
         (let [dice-list (.split dice "d")
             a (int (get dice-list 0))
             b (get dice-list 1)] 
@@ -20,10 +20,12 @@
             (range 
                 (+ (min (abs a) 10000) ;Set max amount of dice rolled to be 10000
                 1)))
+            (if (not (<= (int b) 0))
             (ap-reduce (+ (random.randint 1 (int b)) acc) 
             (range 
                 (+ (min (abs a) 10000) ;Set max amount of dice rolled to be 10000
-                1)))))
+                1)))
+            0)))
         (if (< a 0)
             (- 0 results)
             results)))
@@ -33,13 +35,13 @@
     (defn/a [(commands.command :aliases ["rd"])] roll-dice [self ctx * message]
         (as->   (.replace message " " "") $
                 (.lower $)
-                (re.findall "[+-]*[0-9]+[0-9]*d*[1-9]+[0-9]*|[+-]*[0-9]+[0-9]*df|[+-]*[0-9]+[0-9]*" $) ;Get dice rolls and modifiers
+                (re.findall "[+-]*[0-9]+[0-9]*d*[0-9]+[0-9]*|[+-]*[0-9]+[0-9]*df|[+-]*[0-9]+(?!d)[0-9]*" $) ;Get dice rolls and modifiers
                 (do 
                 (setv n 0)
                 (for [x $] 
                     (+= n 
                     (if (in "d" x)
-                        (await (self.dice-roll x))
+                        (self.dice-roll x)
                         (int x))))
                 n)
                 (await (ctx.send (+ "You rolled: " (str n)))))))
